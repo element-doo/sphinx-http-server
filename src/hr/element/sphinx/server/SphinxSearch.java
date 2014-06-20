@@ -37,11 +37,11 @@ public class SphinxSearch {
   {
 	List<String> result = new LinkedList<String>();
 
-	if (order == null || order.length == 0)
-		order = ArrayUtils.add(order, "!@weight");
-
 	for (String ord : order) {
-	  boolean reversed = ord.length() > 0 && ord.charAt(0) == '!';
+	  if (ord.length() == 0)
+		  continue;
+
+	  boolean reversed = ord.charAt(0) == '!';
 	  final String key = reversed ? ord.substring(1) : ord;
 	  result.add(key + (reversed ? " DESC" : " ASC"));
 	}
@@ -88,9 +88,6 @@ public class SphinxSearch {
   
   @SuppressWarnings("unchecked")
   public String search (final String index, final String text, Integer limit, Integer offset, String[] order) throws SphinxException {
-    int mode = SphinxClient.SPH_MATCH_ALL;
-    int sortMode = SphinxClient.SPH_SORT_EXTENDED;
-    
     int _limit = limit == null ? 20 : limit;
     int _offset = offset == null ? 0 : offset;
 
@@ -104,9 +101,13 @@ public class SphinxSearch {
 
     cl.SetServer ( this.hostname, this.port );
     cl.SetWeights ( new int[] { 100, 1 } );
-    cl.SetMatchMode ( mode );
+    cl.SetMatchMode ( SphinxClient.SPH_MATCH_ALL );
     cl.SetLimits ( _offset, _limit );
-    cl.SetSortMode ( sortMode, sortClause );
+
+    if (sortClause.length() > 0)
+      cl.SetSortMode ( SphinxClient.SPH_SORT_EXTENDED, sortClause );
+    else
+      cl.SetSortMode ( SphinxClient.SPH_SORT_RELEVANCE, null );
 
     if ( groupBy.length() > 0 )
       cl.SetGroupBy ( groupBy, SphinxClient.SPH_GROUPBY_ATTR, groupSort );
