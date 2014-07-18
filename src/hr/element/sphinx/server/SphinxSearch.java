@@ -35,6 +35,9 @@ public class SphinxSearch {
   
   protected String parseOrder(String[] order)
   {
+	if (order == null)
+		return "";
+
 	List<String> result = new LinkedList<String>();
 
 	for (String ord : order) {
