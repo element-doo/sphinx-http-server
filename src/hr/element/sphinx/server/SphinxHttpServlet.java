@@ -1,6 +1,7 @@
 package hr.element.sphinx.server;
 
 import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -21,44 +22,10 @@ public class SphinxHttpServlet extends HttpServlet{
   private SphinxSearch sphinx = null;
 
   public void init(ServletConfig servletConfig) throws ServletException {
-	  final String hostname = servletConfig.getInitParameter("sphinx-hostname");
-	  final String _port = servletConfig.getInitParameter("sphinx-port");
-	  int port = Integer.parseInt(_port);
-
-      this.sphinx = new SphinxSearch(hostname, port);
+    final String configPath = servletConfig.getServletContext().getRealPath("/WEB-INF/config.xml");
+    this.sphinx = new SphinxSearch(configPath);
   }
 
-//  @Override
-//  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//
-//    String text  = "";
-//
-//    final String index = req.getPathInfo().replace("/", "");
-//
-//    System.out.println("GET");
-//    System.out.println("index: " + index);
-//
-//    String json = new String();
-//    text = "elezovic";
-//
-//    if (index != null && text != null) {
-//      SphinxSearch sphinx = new SphinxSearch(index, text);
-//      try {
-//        json = sphinx.search();
-//      } catch (SphinxException e) {
-//        e.printStackTrace();
-//      }
-//    }
-//
-//    resp.setContentType("application/json");
-//    resp.setCharacterEncoding("UTF-8");
-//
-//    PrintWriter out = resp.getWriter();
-//    out.write(json);
-//    out.flush();
-//  }
-
-  
   protected Map<String, Object> parseParams(HttpServletRequest req)
   {
     Map<String, Object> queryParams = new HashMap<String, Object>();
@@ -73,7 +40,7 @@ public class SphinxHttpServlet extends HttpServlet{
 
     final String order = req.getParameter("order");
     queryParams.put("order", order == null ? null : order.split(","));
-    
+
     return queryParams;
   }
 
@@ -93,19 +60,19 @@ public class SphinxHttpServlet extends HttpServlet{
 
     System.out.println("\nPUT");
     System.out.println("data: " + data + "; index: " + index + "; content-type: " +req.getContentType() + "\n");
-    
+
     String json = new String();
 
     if (data != null && !data.equals("")) {
       try {
-    	Map<String, Object> queryParams = parseParams(req);
-        json = this.sphinx.search(
-        		index,
-        		data,
-        		(Integer) queryParams.get("limit"),
-        		(Integer) queryParams.get("offset"),
-        		(String[]) queryParams.get("order")
-        		);
+        Map<String, Object> queryParams = parseParams(req);
+          json = this.sphinx.search(
+          index,
+          data,
+          (Integer) queryParams.get("limit"),
+          (Integer) queryParams.get("offset"),
+          (String[]) queryParams.get("order")
+        );
       } catch (SphinxException e) {
         e.printStackTrace();
       }
@@ -120,5 +87,4 @@ public class SphinxHttpServlet extends HttpServlet{
     out.write(json);
     out.flush();
   }
-
 }

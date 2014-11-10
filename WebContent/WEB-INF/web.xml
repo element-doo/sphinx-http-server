@@ -12,15 +12,6 @@
   <servlet>
     <servlet-name>SphinxHttpServlet</servlet-name>
     <servlet-class>hr.element.sphinx.server.SphinxHttpServlet</servlet-class>
-    
-    <init-param>
-      <param-name>sphinx-hostname</param-name>
-      <param-value>10.5.6.1</param-value>
-    </init-param>
-    <init-param>
-      <param-name>sphinx-port</param-name>
-      <param-value>9312</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>SphinxHttpServlet</servlet-name>

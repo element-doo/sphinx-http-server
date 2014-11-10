@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://dsl-platform.com">
+  <hostname>127.0.0.1</hostname>
+  <port>9312</port>
+
+  <weights>
+    <index name="Author">
+      <weight for="fullName"     is="10" />
+      <weight for="uid"          is="8"  />
+      <weight for="lastNames"    is="8"  />
+      <weight for="firstName"    is="6"  />
+      <weight for="email"        is="3"  />
+    </index>
+    <index name="Journal">
+      <weight for="pk"           is="3"  />
+    </index>
+    <index name="JournalVolume">
+      <weight for="journalID"    is="3"  />
+      <weight for="number"       is="3"  />
+    </index>
+    <index name="ArticleSphinx">
+      <weight for="title"        is="5"  />
+      <weight for="journal"      is="3"  />
+      <weight for="volume"       is="3"  />
+    </index>
+  </weights>
+</config>
